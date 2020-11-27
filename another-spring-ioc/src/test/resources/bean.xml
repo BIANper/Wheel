@@ -1,0 +1,10 @@
+<beans>
+    <bean id="mainBean" class="icu.yuyurbq.wheel.MainBean">
+        <property name="code" value="200" />
+        <property name="msg" value="success" />
+        <property name="data" ref="refBean" />
+    </bean>
+    <bean id="refBean" class="icu.yuyurbq.wheel.RefBean">
+        <property name="data" value="yuyu"/>
+    </bean>
+</beans>

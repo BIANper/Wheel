@@ -4,32 +4,23 @@ import java.util.Map;
 
 public class BeanDefinition {
 
-    private String beanId;
-    private Class<?> beanClass;
-    private Map<String,String> propertyValues;
+    private String beanClassName;
+    private Map<String,Object> propertyValues;
     private Map<String,String> beanReference;
 
-    public String getBeanId() {
-        return beanId;
+    public String getBeanClass() {
+        return beanClassName;
     }
 
-    public void setBeanId(String beanId) {
-        this.beanId = beanId;
+    public void setBeanClass(String beanClassName) {
+        this.beanClassName = beanClassName;
     }
 
-    public Class<?> getBeanClass() {
-        return beanClass;
-    }
-
-    public void setBeanClass(Class<?> beanClass) {
-        this.beanClass = beanClass;
-    }
-
-    public Map<String, String> getPropertyValues() {
+    public Map<String, Object> getPropertyValues() {
         return propertyValues;
     }
 
-    public void setPropertyValues(Map<String, String> propertyValues) {
+    public void setPropertyValues(Map<String, Object> propertyValues) {
         this.propertyValues = propertyValues;
     }
 
