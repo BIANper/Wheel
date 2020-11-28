@@ -1,12 +1,15 @@
 package icu.yuyurbq.wheel.springioc.factory;
 
 import icu.yuyurbq.wheel.springioc.BeanDefinition;
+import icu.yuyurbq.wheel.springioc.external.BeanPostProcessor;
 import icu.yuyurbq.wheel.springioc.reader.BeanDefinitionReader;
 import icu.yuyurbq.wheel.springioc.reader.XmlBeanDefinitionReader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultBeanFactory implements BeanFactory{
@@ -14,13 +17,15 @@ public class DefaultBeanFactory implements BeanFactory{
     private BeanDefinitionReader beanDefinitionReader;
     private Map<String, BeanDefinition> beanDefinitionMap;
     private Map<String,Object> registe = new HashMap<>();
+    private List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     public DefaultBeanFactory(String location) throws Exception {
-        if (location.contains("xml")) {
+        if (location.endsWith("xml")) {
             beanDefinitionReader = new XmlBeanDefinitionReader();
         }
         beanDefinitionReader.loadBeanDefinitions(location);
         beanDefinitionMap = beanDefinitionReader.getBeanDefinitionMap();
+        getBeanPostProcessors();
     }
 
     @Override
@@ -30,6 +35,7 @@ public class DefaultBeanFactory implements BeanFactory{
         }
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanId);
         Object bean = buildBean(beanDefinition);
+        bean = initializeBean(bean, beanId);
         registe.put(beanId,bean);
         return bean;
     }
@@ -64,5 +70,24 @@ public class DefaultBeanFactory implements BeanFactory{
             declaredMethod.invoke(instance, bean);
         }
         return instance;
+    }
+
+    private Object initializeBean(Object bean, String name) throws Exception {
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+            bean = beanPostProcessor.beforeInitialization(bean, name);
+        }
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+            bean = beanPostProcessor.afterInitialization(bean, name);
+        }
+
+        return bean;
+    }
+
+    public void getBeanPostProcessors() throws Exception {
+        for (String beanDefinitionName : beanDefinitionMap.keySet()) {
+            if (BeanPostProcessor.class.isAssignableFrom(Class.forName(beanDefinitionMap.get(beanDefinitionName).getBeanClass()))) {
+                beanPostProcessors.add((BeanPostProcessor)getBean(beanDefinitionName));
+            }
+        }
     }
 }

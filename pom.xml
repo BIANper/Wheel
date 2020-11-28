@@ -11,6 +11,7 @@
 
     <modules>
         <module>another-spring-ioc</module>
+        <module>another-spring-aop</module>
     </modules>
 
     <properties>

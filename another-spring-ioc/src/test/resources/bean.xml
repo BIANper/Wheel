@@ -7,4 +7,5 @@
     <bean id="refBean" class="icu.yuyurbq.wheel.RefBean">
         <property name="data" value="yuyu"/>
     </bean>
+    <bean id="postProcessor" class="icu.yuyurbq.wheel.TestBeanPostProcessor" />
 </beans>
